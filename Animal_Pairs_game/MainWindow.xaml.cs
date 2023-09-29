@@ -17,7 +17,7 @@ namespace Animal_Pairs_game
         DispatcherTimer timer = new DispatcherTimer();
         int tenthsOfSecondsElapsed;
         int matchesFound;
-
+        int LifeCounter = 3;
         public MainWindow()
         {
             InitializeComponent();
@@ -34,7 +34,7 @@ namespace Animal_Pairs_game
             if (matchesFound == 8)
             {
                 timer.Stop();
-                timeTextBlock.Text = timeTextBlock.Text + " - Play again?";
+                timeTextBlock.Text = timeTextBlock.Text + " - Play again? Click Restart button";
             }
         }
 
@@ -56,7 +56,7 @@ namespace Animal_Pairs_game
             Random random = new Random();
             foreach (TextBlock textBlock in mainGrid.Children.OfType<TextBlock>())
             {
-                if (textBlock.Name != "timeTextBlock")
+                if (textBlock.Name != "timeTextBlock" && textBlock.Name != "HealthBlock" && textBlock.Name != "YourLives")
                 {
                     textBlock.Visibility = Visibility.Visible;
                     int index = random.Next(animalEmoji.Count);
@@ -68,6 +68,8 @@ namespace Animal_Pairs_game
             timer.Start();
             tenthsOfSecondsElapsed = 0;
             matchesFound = 0;
+            HealthBlock.Text = "❤️❤️❤️";
+            LifeCounter = 3;
 
         }
 
@@ -92,15 +94,35 @@ namespace Animal_Pairs_game
             {
                 lastTextBlockClicked.Visibility = Visibility.Visible;
                 findingMatch = false;
+                MinusLife();
+                if (LifeCounter == 0)
+                {
+                    timer.Stop();
+                    timeTextBlock.Text = timeTextBlock.Text + " Loser, click restart and try again";
+                }
             }
+        }
+
+        private void MinusLife()
+        {
+            LifeCounter -= 1;
+            if (LifeCounter == 3) HealthBlock.Text = "❤️❤️❤️";
+            if (LifeCounter == 2) HealthBlock.Text = "❤️❤";
+            if (LifeCounter == 1) HealthBlock.Text = "❤️";
+            if (LifeCounter == 0) HealthBlock.Text = "you died))))";
         }
 
         private void TimeTextBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (matchesFound == 8)
             {
-                SetupGame();
+                //
             }
+        }
+
+        private void restartGame(object sender, RoutedEventArgs e)
+        {
+            SetupGame();
         }
     }
 }
